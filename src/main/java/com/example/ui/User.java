@@ -17,6 +17,7 @@ public class User {
         this.role = role;
         this.addDate = Calendar.getInstance();
         this.status = "Active";
+        this.PIN = "0000";
     }
     public String getParentId(){
         return parentId;
@@ -27,8 +28,11 @@ public class User {
     public boolean verifyPIN(String PIN){
         return this.PIN.equals(PIN);
     }
-    public void setPIN(String PIN){
-        this.PIN = PIN;
+    public void setPIN(String oldPIN, String newPIN){
+        if (verifyPIN(oldPIN)){
+            this.PIN = newPIN;
+        }
+
     }
     public String getFullName(){
         return fullName;

@@ -1,11 +1,20 @@
 package com.example.ui;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+
+import java.util.ArrayList;
+
 public class UserController {
     private ObservableList<User> users;
 
     public UserController() {
         users = FXCollections.observableArrayList();
+    }
+    public ObservableList<User> getUsersList() {
+        if (users.isEmpty()) {
+            addFirstUser();
+        }
+        return users;
     }
 
     public ObservableList<User> getUsers(User parent) {
@@ -17,6 +26,23 @@ public class UserController {
             }
         }
         return result;
+    }
+    public User getUserById(String id){
+        for (User user : users){
+            if (user.getId().equals(id)){
+                return user;
+            }
+        }
+        return null;
+    }
+    public void addFirstUser() {
+        StringBuilder id = new StringBuilder();
+        id.append(0);
+        for (int i = 0; i < 15; i++) {
+            id.append((int) (Math.random() * 10));
+        }
+        User newUser = new User(id.toString(),"Admin Account", "Admin", id.toString());
+        users.add(newUser);
     }
     public void addUser(User user, String fullName, String role) {
         if ((!user.getRole().equals("Admin") && role.equals("Doctor"))
