@@ -7,30 +7,58 @@ import java.util.Map;
 import java.util.Objects;
 
 public class PatientsController {
-    private final ObservableList<Patient> patients;
-
-    public PatientsController() {
-        patients = FXCollections.observableArrayList();
+    private static ObservableList<Patient> patients = FXCollections.observableArrayList();
+    public static ObservableList<Patient> getPatientsList() {
+        return patients;
     }
 
-    public ObservableList<Patient> getPatients(User user) {
+
+    public static ObservableList<Patient> getPatients(User user) {
+        if (patients.isEmpty()) {
+            addFirstPatient();
+        }
+        System.out.println("patients len: " + patients.size());
+
         if (user.getRole().equals("Assistant")) {
             return null;
         }
-        String parentId = user.getParentId();
+        String parentId = user.getId();
         ObservableList<Patient> result = FXCollections.observableArrayList();
+
         for (Patient patient : patients) {
+            System.out.println("**patient**: " + patient.getFullName()+ " " + patient.getId() + " " + patient.getParentId());
             if (patient.getParentId().equals(parentId)) {
                 result.add(patient);
             }
         }
         return result;
     }
-    public  void addPatient(User user, String fullName, String gender, ArrayList<String> tests, int age){
+    public static void deletePatient(String id) {
+        for (Patient patient : patients) {
+            if (patient.getId().equals(id)) {
+                patients.remove(patient);
+                return;
+            }
+        }
+    }
+    public static void addFirstPatient() {
+        StringBuilder id = new StringBuilder();
+        id.append(0);
+        for (int i = 0; i < 15; i++) {
+            id.append((int) (Math.random() * 10));
+        }
+        ArrayList<String> tests = new ArrayList<>();
+        tests.add("Test-A");
+        tests.add("Test-B");
+        String parentId = UserController.getFirstUserId();
+        Patient newPatient = new Patient(parentId, id.toString(), "Patient A", "Fille", tests, 18);
+        patients.add(newPatient);
+    }
+    public static void addPatient(User user, String fullName, String gender, ArrayList<String> tests, int age){
         //generate unique random id
         //generate random string of exactly 16 characters of numbers
         String role = user.getRole();
-        if (!role.equals("Assistant") && !role.equals("Doctor")){
+        if (!role.equals("Assistant") && !role.equals("Doctor") && !role.equals("Admin")){
             return;
         }
         StringBuilder id = new StringBuilder();
@@ -42,7 +70,25 @@ public class PatientsController {
         Patient newPatient = new Patient(user.getParentId(), id.toString(), fullName, gender, tests, age);
         patients.add(newPatient);
     }
-
+    public static void updatePatient(String id, String fullName, String gender , int age, ArrayList<String> tests, String progress){
+        for (Patient patient : patients){
+            if (patient.getId().equals(id)){
+                patient.setFullName(fullName);
+                patient.setGender(gender);
+                patient.setAge(age);
+                patient.setTests(tests);
+                patient.setProgress(progress);
+                PatientsWindowController.setUpdate(false);
+                // we add a patient then we remove it to trigger the update
+                PatientsController.addPatient(UserController.getCurrentUser(),"", "", new ArrayList<>(), 0);
+                String lastId = patients.get(patients.size()-1).getId();
+                deletePatient(lastId);
+                return;
+    }  }
+    }
+    public static void deleteTest(Patient patient, String test){
+        patient.removeTest(test);
+    }
     public void removePatient(Patient patient) {
         patients.remove(patient);
     }

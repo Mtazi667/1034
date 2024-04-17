@@ -5,18 +5,29 @@ import javafx.collections.FXCollections;
 import java.util.ArrayList;
 
 public class UserController {
-    private ObservableList<User> users;
+    private static ObservableList<User> users = FXCollections.observableArrayList();
+    private static ObservableList<Patient> patients;
+    private static User currentUser;
 
-    public UserController() {
-        users = FXCollections.observableArrayList();
-    }
-    public ObservableList<User> getUsersList() {
+
+    public static ObservableList<User> getUsersList() {
         if (users.isEmpty()) {
             addFirstUser();
         }
         return users;
     }
-
+    public static String getFirstUserId() {
+        if (!users.isEmpty()) {
+            return users.get(0).getId();
+        }
+        return null;
+    }
+    public static void setCurrentUser(User user) {
+        currentUser = user;
+    }
+    public static User getCurrentUser() {
+        return currentUser;
+    }
     public ObservableList<User> getUsers(User parent) {
         String parentId = parent.getId();
         ObservableList<User> result = FXCollections.observableArrayList();
@@ -35,7 +46,7 @@ public class UserController {
         }
         return null;
     }
-    public void addFirstUser() {
+    public static void addFirstUser() {
         StringBuilder id = new StringBuilder();
         id.append(0);
         for (int i = 0; i < 15; i++) {
@@ -43,6 +54,10 @@ public class UserController {
         }
         User newUser = new User(id.toString(),"Admin Account", "Admin", id.toString());
         users.add(newUser);
+        ArrayList<String> tests = new ArrayList<>();
+        tests.add("Test-A");
+        tests.add("Test-B");
+
     }
     public void addUser(User user, String fullName, String role) {
         if ((!user.getRole().equals("Admin") && role.equals("Doctor"))

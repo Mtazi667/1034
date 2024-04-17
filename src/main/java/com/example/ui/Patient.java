@@ -39,8 +39,26 @@ public class Patient {
     public int getAge(){
         return age;
     }
+    public String getTests(){
+        // String separated by -
+        String testsStr = "";
+        for (String test : this.tests){
+            testsStr += test;
+            if (this.tests.indexOf(test) != this.tests.size()-1){
+                testsStr += " - ";
+            }
+        }
+        return testsStr;
+    }
+    public void setTests(ArrayList<String> tests){
+        this.tests.clear();
+        this.tests.addAll(tests);
+    }
     public void setAge(int age){
         this.age = age;
+        if (this.testData == null) {
+            this.testData = new ArrayList<>();
+        }
         for (Test test : testData){
             test.setAge(age);
         }
@@ -54,7 +72,7 @@ public class Patient {
     public void setGender(String gender){
         this.gender = gender;
     }
-    public ArrayList<String> getTests(){
+    public ArrayList<String> getTestsArray(){
         return tests;
     }
     public void addTest(String test){
