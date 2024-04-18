@@ -20,11 +20,11 @@
     <padding>
         <Insets bottom="30.0" left="20.0" right="20.0" top="10.0"/>
     </padding>
-    <VBox spacing="5.0" >
+    <VBox spacing="5.0" alignment="CENTER" >
         <padding>
             <Insets left="10.0" right="10.0" top="30.0" />
         </padding>
-        <Label>Utilisateurs</Label>
+        <Label style="-fx-font-weight: bold;-fx-font: 18 arial;">Utilisateurs</Label>
         <TableView fx:id="UsersTable" >
             <columns>
                 <TableColumn  text="ID" fx:id="idColumn" />

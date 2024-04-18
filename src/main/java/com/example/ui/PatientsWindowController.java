@@ -179,6 +179,7 @@ public class PatientsWindowController {
                 alert.setTitle("Erreur");
                 alert.setContentText("Impossible de charger l'interface demandée. Contactez un administrateur.");
                 alert.getButtonTypes().add(ButtonType.OK);
+                alert.show();
             }
 
 
