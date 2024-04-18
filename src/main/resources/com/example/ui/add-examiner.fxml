@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.example.ui.AddExaminerWindowController"
+          hgap="20" vgap="10" alignment="CENTER">
+    <padding>
+        <Insets top="30.0" left="20.0" right="20.0" bottom="20.0"></Insets>
+    </padding>
+    <Label GridPane.rowIndex="0" GridPane.columnIndex="0">First Name</Label>
+    <TextField GridPane.rowIndex="0" GridPane.columnIndex="1" fx:id="firstName"/>
+    <Label GridPane.rowIndex="1" GridPane.columnIndex="0">Last Name</Label>
+    <TextField GridPane.rowIndex="1" GridPane.columnIndex="1" fx:id="lastName"/>
+    <Label GridPane.rowIndex="2" GridPane.columnIndex="0">Gender</Label>
+    <TextField GridPane.rowIndex="2" GridPane.columnIndex="1" fx:id="gender"/>
+    <Label GridPane.rowIndex="3" GridPane.columnIndex="0">Niveaux</Label>
+    <HBox GridPane.rowIndex="3" GridPane.columnIndex="1" spacing="14.5">
+        <Label >Niveau1</Label>
+        <CheckBox fx:id="niveau1"/>
+        <Label >Niveau2</Label>
+        <CheckBox fx:id="niveau2"/>
+    </HBox>
+    <Label GridPane.rowIndex="4" GridPane.columnIndex="0" >Bitrh Date</Label>
+    <DatePicker prefWidth="200" GridPane.rowIndex="4" GridPane.columnIndex="1" fx:id="birthDate"/>
+    <Label GridPane.rowIndex="5" GridPane.columnIndex="0">Progress</Label>
+    <ChoiceBox GridPane.rowIndex="5" GridPane.columnIndex="1" prefWidth="200" fx:id="progress">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="In Progress"/>
+                <String fx:value="Pending Payment"/>
+                <String fx:value="Archived"/>
+                <String fx:value="Completed"/>
+                <String fx:value="Cancelled"/>
+            </FXCollections>
+        </items>
+    </ChoiceBox>
+    <AnchorPane GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.columnSpan="2">
+        <HBox AnchorPane.rightAnchor="0" spacing="10.0">
+            <Button onAction="#onSaveButtonClick">Save</Button>
+            <Button onAction="#onCancelButtonClick">Cancel</Button>
+        </HBox>
+    </AnchorPane>
+</GridPane>
+

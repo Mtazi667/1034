@@ -12,13 +12,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class PatientsWindowController {
+public class ExaminersWindowController {
+
     @FXML
     private MenuBar topMenu;
     @FXML
     private Label Success;
     @FXML
-    private TableView<Patient> PatientsTable;
+    private TableView<Examiner> ExaminersTable;
     @FXML
     private TableColumn<User, String> idColumn;
     @FXML
@@ -28,16 +29,16 @@ public class PatientsWindowController {
     @FXML
     private TableColumn<User, String> statusColumn;
     @FXML
-    private TableColumn<User, String> testsColumn;
+    private TableColumn<User, String> niveauxColumn;
     @FXML
-    private ChoiceBox testChoiceBox;
+    private ChoiceBox niveauChoiceBox;
     @FXML
     private Label success;
-    private ObservableList<Patient> patients;
+    private ObservableList<Examiner> examiners;
 
-    private StringProperty selectedPatientProperty = new SimpleStringProperty();
+    private StringProperty selectedExaminerProperty = new SimpleStringProperty();
     private static User currentUser;
-    private static Patient selectedPatient;
+    private static Examiner selectedExaminer;
     private static boolean update = false;
     public static User getCurrentUser(){
         return currentUser;
@@ -46,14 +47,14 @@ public class PatientsWindowController {
         return update;
     }
     public static void setUpdate(boolean update){
-        PatientsWindowController.update = update;
+        ExaminersWindowController.update = update;
     }
-    public static Patient getSelectedPatient(){
-        return selectedPatient;
+    public static Examiner getSelectedPatient(){
+        return selectedExaminer;
     }
     @FXML
     private void onUpdateClick(){
-        if (selectedPatient == null){
+        if (selectedExaminer == null){
             success.setText("Please select a patient to update");
             new java.util.Timer().schedule(
                     new java.util.TimerTask() {
@@ -70,9 +71,9 @@ public class PatientsWindowController {
         try {
             setUpdate(true);
             Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource("add-patient.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource("add-examiner.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 320, 250);
-            stage.setTitle("Update Patient");
+            stage.setTitle("Update Examiner");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.setAlwaysOnTop(true);
@@ -86,14 +87,14 @@ public class PatientsWindowController {
     }
     @FXML
     private void onDeleteTestClick(){
-        if (selectedPatient == null){
+        if (selectedExaminer == null){
             return;
         }
-        String test = (String) testChoiceBox.getValue();
-        System.out.println("Test: " + test);
-        if (test == null){
+        String niveau = (String) niveauChoiceBox.getValue();
+        System.out.println("Niveau: " + niveau);
+        if (niveau == null){
             //
-            success.setText("Please select a test to delete");
+            success.setText("Please select a niveau to delete");
             //set text back to empty after 2 seconds
             new java.util.Timer().schedule(
                     new java.util.TimerTask() {
@@ -108,12 +109,12 @@ public class PatientsWindowController {
             );
             return;
         }
-        PatientsController.deleteTest(selectedPatient, test);
-        testChoiceBox.getItems().clear();
-        for (String tst : selectedPatient.getTestsArray()){
-            testChoiceBox.getItems().add(tst);
-        }
-        PatientsTable.refresh();
+        ExaminersController.deleteNiveau(selectedExaminer, niveau);
+        niveauChoiceBox.getItems().clear();
+        //for (String niveau : selectedExaminer.getNiveauxArray()){
+          //  niveauChoiceBox.getItems().add(niveau);
+        //}
+        ExaminersTable.refresh();
     }
     public void initialize(){
         currentUser = UserController.getCurrentUser();
@@ -126,16 +127,16 @@ public class PatientsWindowController {
             addUtilisateur.setDisable(true);
         }
         utilisateurs.getItems().addAll(addUtilisateur, afficherUtilisateurs);
-        Menu Patients = new Menu("Patients");
-        MenuItem afficherPatients = new MenuItem("Acces Patients");
-        MenuItem addPatient = new MenuItem("Add Patient");
-        addPatient.setOnAction(event -> {
-            System.out.println("Add Patient");
+        //Menu Examiners = new Menu("Examiners");
+        //var afficherExaminers = new MenuItem("Acces Examiners");
+        MenuItem addExaminer = new MenuItem("Add Examiner");
+        addExaminer.setOnAction(event -> {
+            System.out.println("Add Examiner");
             try {
                 Stage stage = new Stage();
-                FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource("add-patient.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource("add-examiner.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 320, 250);
-                stage.setTitle("Ajouter Patient");
+                stage.setTitle("Ajouter Examiner");
                 stage.setScene(scene);
                 stage.setResizable(false);
                 stage.setAlwaysOnTop(true);
@@ -148,16 +149,16 @@ public class PatientsWindowController {
             }
         });
         if (currentUser.getRole().equals("Examiner")){
-            addPatient.isDisable();
+            addExaminer.isDisable();
         }
         Menu Examiners = new Menu("Examiners");
         MenuItem afficherExaminers = new MenuItem("Acces Examiners");
-        MenuItem addExaminer = new MenuItem("Add Examiner");
+        //MenuItem addExaminer = new MenuItem("Add Examiner");
         Examiners.getItems().addAll(addExaminer, afficherExaminers);
         if (!currentUser.getRole().equals("Admin") && !currentUser.getRole().equals("Doctor")){
             Examiners.isDisable();
         }
-        afficherPatients.setDisable(true);
+        afficherExaminers.setDisable(true);
         Menu Setting = new Menu("Settings");
         MenuItem ChangePassword = new MenuItem("Change PIN");
         MenuItem Logout = new MenuItem("Logout");
@@ -185,35 +186,35 @@ public class PatientsWindowController {
 
         });
         Setting.getItems().addAll(ChangePassword, Logout);
-        Patients.getItems().addAll(addPatient, afficherPatients);
-        topMenu.getMenus().addAll(utilisateurs, Patients, Examiners, Setting, Help);
+        Examiners.getItems().addAll(addExaminer, afficherExaminers);
+        topMenu.getMenus().addAll(utilisateurs, Examiners, Examiners, Setting, Help);
         System.out.println("User: " + currentUser.getFullName());
-        patients = PatientsController.getPatients(currentUser);
+        examiners = ExaminersController.getExaminers(currentUser);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        idColumn.prefWidthProperty().bind(PatientsTable.widthProperty().multiply(0.2));
+        idColumn.prefWidthProperty().bind(ExaminersTable.widthProperty().multiply(0.2));
         idColumn.setStyle("-fx-alignment: CENTER;");
         fullNameColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
-        fullNameColumn.prefWidthProperty().bind(PatientsTable.widthProperty().multiply(0.2));
+        fullNameColumn.prefWidthProperty().bind(ExaminersTable.widthProperty().multiply(0.2));
         fullNameColumn.setStyle("-fx-alignment: CENTER;");
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
-        genderColumn.prefWidthProperty().bind(PatientsTable.widthProperty().multiply(0.17));
+        genderColumn.prefWidthProperty().bind(ExaminersTable.widthProperty().multiply(0.17));
         genderColumn.setStyle("-fx-alignment: CENTER;");
-        testsColumn.setCellValueFactory(new PropertyValueFactory<>("tests"));
-        testsColumn.prefWidthProperty().bind(PatientsTable.widthProperty().multiply(0.23));
-        testsColumn.setStyle("-fx-alignment: CENTER;");
+        niveauxColumn.setCellValueFactory(new PropertyValueFactory<>("niveaux"));
+        niveauxColumn.prefWidthProperty().bind(ExaminersTable.widthProperty().multiply(0.23));
+        niveauxColumn.setStyle("-fx-alignment: CENTER;");
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("progress"));
-        statusColumn.prefWidthProperty().bind(PatientsTable.widthProperty().multiply(0.18));
+        statusColumn.prefWidthProperty().bind(ExaminersTable.widthProperty().multiply(0.18));
         statusColumn.setStyle("-fx-alignment: CENTER;");
-        PatientsTable.setItems(PatientsController.getPatientsList());
-        PatientsTable.refresh();
-        PatientsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            selectedPatient = newValue;
-            selectedPatientProperty.set(newValue.getId());
-            testChoiceBox.getItems().clear();
-            for (String test : newValue.getTestsArray()){
-                testChoiceBox.getItems().add(test);
+        ExaminersTable.setItems(ExaminersController.getExaminersList());
+        ExaminersTable.refresh();
+        ExaminersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedExaminer = newValue;
+            selectedExaminerProperty.set(newValue.getId());
+            niveauChoiceBox.getItems().clear();
+            for (String niveau : newValue.getNiveauxArray()){
+                niveauChoiceBox.getItems().add(niveau);
             }
-            PatientsTable.refresh();
+            ExaminersTable.refresh();
         });
     }
 }
