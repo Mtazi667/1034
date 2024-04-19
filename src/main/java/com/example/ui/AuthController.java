@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -54,19 +55,9 @@ public class AuthController {
             else if (user.verifyPIN(pin)){
                 try {
                     userController.setCurrentUser(user);
-                    Stage stage = new Stage();
-                    FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource("patients-window.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load(), 700, 400);
-                    stage.setTitle("Patients");
-                    stage.setScene(scene);
-                    stage.setResizable(false);
-                    stage.show();
-                    close((Node) event.getSource());
-                } catch (IOException exception) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Erreur");
-                    alert.setContentText("Impossible de charger l'interface demandée. Contactez un administrateur.");
-                    alert.getButtonTypes().add(ButtonType.OK);
+                    openWindow("patients-window.fxml", "Main", event, true, false, 700, 400);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             else{
@@ -75,7 +66,7 @@ public class AuthController {
         }
 
     }
-    private void close(Node element) {
+    public static void close(Node element) {
         Stage stage = (Stage) element.getScene().getWindow();
         stage.close();
     }
@@ -83,6 +74,26 @@ public class AuthController {
     protected void onResetClick(){
         PasswordFiled.setText("");
         Success.setText("");
+    }
+    public static void openWindow(String fxml, String title, Event event, Boolean closeCurrent, Boolean alwaysOnTop,int width, int height){
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource(fxml));
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setTitle(title);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.setAlwaysOnTop(alwaysOnTop);
+            stage.show();
+            if(closeCurrent){
+                close((Node) event.getSource());
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText("Impossible de charger l'interface demandée. Contactez un administrateur.");
+            alert.getButtonTypes().add(ButtonType.OK);
+        }
     }
     public void initialize(){
         users = UserController.getUsersList();

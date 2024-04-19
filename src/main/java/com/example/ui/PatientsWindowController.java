@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -52,7 +53,7 @@ public class PatientsWindowController {
         return selectedPatient;
     }
     @FXML
-    private void onUpdateClick(){
+    private void onUpdateClick(ActionEvent event){
         if (selectedPatient == null){
             success.setText("Please select a patient to update");
             new java.util.Timer().schedule(
@@ -67,22 +68,8 @@ public class PatientsWindowController {
                     2000
             );
         }
-        try {
-            setUpdate(true);
-            Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource("add-patient.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 320, 250);
-            stage.setTitle("Update Patient");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.setAlwaysOnTop(true);
-            stage.show();
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setContentText("Impossible de charger l'interface demandée. Contactez un administrateur.");
-            alert.getButtonTypes().add(ButtonType.OK);
-        }
+        AuthController.openWindow("add-patient.fxml", "Update Patient", event, false, true,320, 250);
+        setUpdate(true);
     }
     @FXML
     private void onDeleteTestClick(){
@@ -115,6 +102,7 @@ public class PatientsWindowController {
         }
         PatientsTable.refresh();
     }
+
     public void initialize(){
         currentUser = UserController.getCurrentUser();
         Menu utilisateurs = new Menu("Users");
@@ -152,7 +140,16 @@ public class PatientsWindowController {
         }
         Menu Examiners = new Menu("Examiners");
         MenuItem afficherExaminers = new MenuItem("Acces Examiners");
+        afficherExaminers.setOnAction(event -> {
+            System.out.println("Afficher Examiners");
+            AuthController.openWindow("examiners-window.fxml", "Examiners", event, false, true, 600, 400);
+        });
         MenuItem addExaminer = new MenuItem("Add Examiner");
+
+        addExaminer.setOnAction(event -> {
+            System.out.println("Add Examiner");
+            AuthController.openWindow("add-examiner.fxml", "Ajouter Examiner", event, false, true, 320, 250);
+            });
         Examiners.getItems().addAll(addExaminer, afficherExaminers);
         if (!currentUser.getRole().equals("Admin") && !currentUser.getRole().equals("Doctor")){
             Examiners.isDisable();
@@ -165,24 +162,7 @@ public class PatientsWindowController {
         Menu Help = new Menu("Help");
         Logout.setOnAction(event -> {
             System.out.println("Logout");
-            try {
-                Stage currentStage = (Stage) success.getScene().getWindow();
-                Stage stage = new Stage();
-                FXMLLoader fxmlLoader = new FXMLLoader(Auth.class.getResource("Auth.fxml"));
-                Scene scene = new Scene(fxmlLoader.load(), 400, 370);
-                stage.setTitle("Connexion");
-                stage.setScene(scene);
-                stage.show();
-                currentStage.close();
-            } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erreur");
-                alert.setContentText("Impossible de charger l'interface demandée. Contactez un administrateur.");
-                alert.getButtonTypes().add(ButtonType.OK);
-                alert.show();
-            }
-
-
+            AuthController.openWindow("Auth.fxml", "Connexion", event, true, false, 400, 370);
         });
         Setting.getItems().addAll(ChangePassword, Logout);
         Patients.getItems().addAll(addPatient, afficherPatients);
