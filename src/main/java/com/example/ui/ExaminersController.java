@@ -52,7 +52,7 @@ public class ExaminersController {
         niveaux.add("Niveau1");
         niveaux.add("Niveau2");
         String parentId = UserController.getFirstUserId();
-        Examiner newExaminer = new Examiner(parentId, id.toString(), "Patient A", "Fille", niveaux, 18);
+        Examiner newExaminer = new Examiner(parentId, id.toString(), "Medecin A", "Fille", niveaux, 18);
         examiners.add(newExaminer);
     }
     public static void addExaminer(User user, String fullName, String gender, String s, ArrayList<String> niveaux, int age){
